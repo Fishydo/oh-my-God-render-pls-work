@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Upload Files</h2>
+<input type="file" id="files" multiple>
+<button onclick="deploy()">Deploy</button>
+
+<script>
+async function deploy() {
+  const input = document.getElementById("files");
+  const files = [];
+
+  for (let file of input.files) {
+    const text = await file.text();
+    files.push({ name: file.name, content: text });
+  }
+
+  const res = await fetch("/deploy/static", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ files })
+  });
+
+  const data = await res.json();
+  alert("Live at: " + data.url);
+}
+</script>
+
+</body>
+</html>
