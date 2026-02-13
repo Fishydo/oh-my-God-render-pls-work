@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Clone Git Repo</h2>
+
+<input id="repo" placeholder="GitHub repo URL">
+<input id="build" placeholder="Build command">
+<input id="start" placeholder="Start command">
+
+<button onclick="deploy()">Deploy</button>
+
+<script>
+async function deploy() {
+  const res = await fetch("/deploy/repo", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      repo: document.getElementById("repo").value,
+      build: document.getElementById("build").value,
+      start: document.getElementById("start").value
+    })
+  });
+
+  const data = await res.json();
+  alert("Live at: " + data.url);
+}
+</script>
+
+</body>
+</html>
