@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Editor</title>
+</head>
+<body>
+
+<h2>Create Project</h2>
+
+<select id="mode">
+  <option value="static">Static</option>
+  <option value="node">Node</option>
+</select>
+
+<textarea id="code" rows="15" cols="60">
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Hello World</h1>
+</body>
+</html>
+</textarea>
+
+<input id="build" placeholder="Build command (optional)">
+<input id="start" placeholder="Start command (node server.js)">
+
+<button onclick="deploy()">Deploy</button>
+
+<script>
+async function deploy() {
+  const mode = document.getElementById("mode").value;
+  const files = [{
+    name: mode === "static" ? "index.html" : "server.js",
+    content: document.getElementById("code").value
+  }];
+
+  const endpoint = mode === "static" ? "/deploy/static" : "/deploy/node";
+
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      files,
+      build: document.getElementById("build").value,
+      start: document.getElementById("start").value
+    })
+  });
+
+  const data = await res.json();
+  alert("Live at: " + data.url);
+}
+</script>
+
+</body>
+</html>
